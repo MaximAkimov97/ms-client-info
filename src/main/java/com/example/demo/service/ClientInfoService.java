@@ -15,7 +15,7 @@ public class ClientInfoService {
 
     private final ClientRepository clientRepository;
     private final ClientInfoMapper clientInfoMapper;
-    private ClientInfoService clientInfoService;
+   
 
     public Client createClient(Client client) {
         return clientInfoMapper.clientEntityToClient(clientRepository.save(clientInfoMapper.clientToClientEntity(client)));
