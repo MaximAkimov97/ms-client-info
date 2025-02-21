@@ -46,6 +46,9 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    ///сделать метод удаления клиента по его id
+    @DeleteMapping("/deleteClientsId")//удаляем клиента по его id
+    public ResponseEntity<Void> deleteClient(@RequestParam(value = "clientId") Long clientId) {
+        clientInfoService.deleteClientId(clientId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

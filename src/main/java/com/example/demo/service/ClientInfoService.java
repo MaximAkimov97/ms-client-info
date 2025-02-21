@@ -15,7 +15,7 @@ public class ClientInfoService {
 
     private final ClientRepository clientRepository;
     private final ClientInfoMapper clientInfoMapper;
-   
+
 
     public Client createClient(Client client) {
         return clientInfoMapper.clientEntityToClient(clientRepository.save(clientInfoMapper.clientToClientEntity(client)));
@@ -48,4 +48,14 @@ public class ClientInfoService {
         }
     }
 
+    public void deleteClientId(Long clientId) {
+        Optional<ClientEntity> optionalClient = clientRepository.findById(clientId);
+        // Проверяем, существует ли клиент
+        if (optionalClient.isPresent()) {
+            ClientEntity client = optionalClient.get();
+            clientRepository.delete(client);
+        } else {
+            throw new NullPointerException("клиент не найден");
+        }
+    }
 }
