@@ -4,6 +4,8 @@ import com.example.demo.domain.Client;
 import com.example.demo.dto.ClientDTO;
 import com.example.demo.mapper.ClientInfoMapper;
 import com.example.demo.service.ClientInfoService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,10 @@ public class ClientController {
 
     private final ClientInfoService clientInfoService;
     private final ClientInfoMapper clientInfoMapper;
-    //private final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+
 
     @PostMapping
-    public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO client) {
+    public ResponseEntity<ClientDTO> createClient(@RequestBody @Valid ClientDTO client) {
         Client clientDomain = clientInfoService.createClient(clientInfoMapper.clientDTOToClient(client));
         return new ResponseEntity<>(clientInfoMapper.clientToClientDTO(clientDomain), HttpStatus.CREATED);
     }
@@ -34,7 +36,8 @@ public class ClientController {
 
     @PutMapping("/updatePhone")
     public ResponseEntity<Void> updatePhone(@RequestParam(value = "clientId") Long clientId,
-                                            @RequestParam(value = "phone") String phone) {
+                                            @RequestParam(value = "phone")
+                                            @Valid @Pattern(regexp = "^\\+7[0-9]{10}$", message = "Номер телефона должен быть в формате +7xxxxxxxxxx") String  phone) {
         clientInfoService.updatePhoneByClientId(clientId, phone);
         return new ResponseEntity<>(HttpStatus.OK);
     }
