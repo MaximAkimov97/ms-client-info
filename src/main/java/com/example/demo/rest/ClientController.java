@@ -4,6 +4,7 @@ import com.example.demo.domain.Client;
 import com.example.demo.dto.ClientDTO;
 import com.example.demo.mapper.ClientInfoMapper;
 import com.example.demo.service.ClientInfoService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +24,21 @@ public class ClientController {
 
 
     @PostMapping
+    @Operation(summary = "Создание нового клиента в БД")
     public ResponseEntity<ClientDTO> createClient(@RequestBody @Valid ClientDTO client) {
         Client clientDomain = clientInfoService.createClient(clientInfoMapper.clientDTOToClient(client));
         return new ResponseEntity<>(clientInfoMapper.clientToClientDTO(clientDomain), HttpStatus.CREATED);
     }
 
     @GetMapping
+    @Operation(summary = "Получаем данные о клиенте по его ID")
     public ResponseEntity<ClientDTO> getClient(@RequestParam(value = "clientId") Long clientId) {
         Client clientDomain = clientInfoService.getClient(clientId);
         return new ResponseEntity<>(clientInfoMapper.clientToClientDTO(clientDomain), HttpStatus.CREATED);
     }
 
     @PutMapping("/updatePhone")
+    @Operation(summary = "Обновляем номер телефона клиента")
     public ResponseEntity<Void> updatePhone(@RequestParam(value = "clientId") Long clientId,
                                             @RequestParam(value = "phone")
                                             @Valid @Pattern(regexp = "^\\+7[0-9]{10}$", message = "Номер телефона должен быть в формате +7xxxxxxxxxx") String  phone) {
@@ -42,14 +46,8 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/v2/updatePhone")
-    public ResponseEntity<Void> updatePhoneV2(@RequestParam(value = "clientId") Long clientId,
-                                              @RequestParam(value = "phone") String phone) {
-        clientInfoService.updatePhoneByClientIdV2(clientId, phone);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @DeleteMapping(value = "/deleteClientsId")//удаляем клиента по его id
+    @Operation(summary = "Удаляем клиента по его id")
     public ResponseEntity<Void> deleteClient(@RequestParam(value = "clientId") Long clientId) {
         clientInfoService.deleteClientId(clientId);
         return new ResponseEntity<>(HttpStatus.OK);

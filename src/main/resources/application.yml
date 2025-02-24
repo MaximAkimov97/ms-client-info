@@ -12,3 +12,15 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true # Показывать SQL запросы в консоли (для отладки)
+springdoc:
+      api-docs:
+        enabled: true  # Включить генерацию OpenAPI спецификации (по умолчанию true)
+      swagger-ui:
+        enabled: true  # Включить Swagger UI (по умолчанию true)
+      info:
+        title: My API
+        version: v1
+        description: Описание моего API
+        contact:
+          name: Your Name
+          email: your.email@example.com
