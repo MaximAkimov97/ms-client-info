@@ -40,13 +40,7 @@ public class ClientInfoService {
         }
     }
 
-    public void updatePhoneByClientIdV2(Long clientId, String phone) {
-        var count = clientRepository.updatePhoneNumberByClientId(clientId, phone);
 
-        if (count == 0) {
-            throw new NullPointerException("клиент не найден");
-        }
-    }
 
     public void deleteClientId(Long clientId) {
         Optional<ClientEntity> optionalClient = clientRepository.findById(clientId);
