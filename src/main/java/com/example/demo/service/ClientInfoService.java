@@ -18,11 +18,14 @@ public class ClientInfoService {
 
 
     public Client createClient(Client client) {
+        //если имя клиента "Ведро" а фамилия "Помоев", то выкинуть ошибку ClientRegistrationBanException
         return clientInfoMapper.clientEntityToClient(clientRepository.save(clientInfoMapper.clientToClientEntity(client)));
 
     }
 
     public Client getClient(Long clientId) {
+
+        //добавить проверку что из базы нашли клиента, если нет выкинуть ошибку
         return clientInfoMapper.clientEntityToClient(clientRepository.findById(clientId).get());
     }
 
@@ -36,7 +39,7 @@ public class ClientInfoService {
             // Сохраняем изменения в базе данных
             clientRepository.save(client);
         } else {
-            throw new NullPointerException("клиент не найден");
+            throw new ClientNotFoundException("клиент не найден");
         }
     }
 
@@ -49,7 +52,7 @@ public class ClientInfoService {
             ClientEntity client = optionalClient.get();
             clientRepository.delete(client);
         } else {
-            throw new NullPointerException("клиент не найден");
+            throw new ClientNotFoundException("клиент не найден");
         }
     }
 }
