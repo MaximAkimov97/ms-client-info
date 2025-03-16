@@ -41,7 +41,7 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core'
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'org.flywaydb:flyway-database-postgresql:10.22.0'
-
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 
 }
