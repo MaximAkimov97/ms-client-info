@@ -43,6 +43,7 @@ dependencies {
 	runtimeOnly 'org.flywaydb:flyway-database-postgresql:10.22.0'
 
 
+
 }
 
 tasks.named('test') {

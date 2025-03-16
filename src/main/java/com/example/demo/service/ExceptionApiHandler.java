@@ -1,61 +1,48 @@
 package com.example.demo.service;
 
 
-import org.hibernate.exception.ConstraintViolationException;
-import org.springdoc.api.ErrorMessage;
+import com.example.demo.dto.ErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class ExceptionApiHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorMessage> Exception(Exception ex) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorMessage(ex.getMessage()));
-    }
-
-    @ExceptionHandler(ClientNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleClientNotFoundException(ClientNotFoundException ex) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorMessage(ex.getMessage()));
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorMessage> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
-        String message = "Invalid input: " + ex.getName() + " must be of type " + ex.getRequiredType().getSimpleName();
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorMessage(message));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        String message = "Invalid request body: " + ex.getBindingResult().getFieldError().getDefaultMessage();
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorMessage(message));
+    @ResponseStatus(HttpStatus.NOT_FOUND) // Optional: Returns 404
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(MethodArgumentNotValidException ex) {
+        ex.printStackTrace();
+        final ErrorResponse error = new ErrorResponse("000 001", "Неверный формат данных");
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorMessage> handleConstraintViolationException(ConstraintViolationException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorMessage(ex.getMessage()));
-    }
-
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorMessage> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(new ErrorMessage("Data integrity violation: " + ex.getMessage()));
+    @ResponseStatus(HttpStatus.NOT_FOUND) // Optional: Returns 404
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(DataIntegrityViolationException ex) {
+        ex.printStackTrace();
+        final ErrorResponse error = new ErrorResponse("000 002", "Нарушение целостности данных");
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(ClientNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND) // Optional: Returns 404
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(ClientNotFoundException ex) {
+        ex.printStackTrace();
+        final ErrorResponse error = new ErrorResponse("000 003", "Клиент не найден");
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    // Общий обработчик для всех остальных необработанных исключений
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // Optional: Returns 500
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
+        // Логирование ошибки
+        ex.printStackTrace();
+
+        ErrorResponse error = new ErrorResponse("Другая ошибка", "Обратитесь в службу поддержки");
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
