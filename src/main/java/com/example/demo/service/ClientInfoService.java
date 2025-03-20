@@ -17,10 +17,14 @@ public class ClientInfoService {
     private final ClientInfoMapper clientInfoMapper;
 
 
-    public Client createClient(Client client) {
-        //если имя клиента "Ведро" а фамилия "Помоев", то выкинуть ошибку ClientRegistrationBanException
-        return clientInfoMapper.clientEntityToClient(clientRepository.save(clientInfoMapper.clientToClientEntity(client)));
-
+    public Client createClient(Client client) throws ClientRegistrationBanException {
+        if ("ведро".equalsIgnoreCase(client.getFirstName()) &&
+                "помоев".equalsIgnoreCase(client.getLastName())) {
+            throw new ClientRegistrationBanException("Ошибка в имени и фамилии");
+        }
+        else {
+            return clientInfoMapper.clientEntityToClient(clientRepository.save(clientInfoMapper.clientToClientEntity(client)));
+        }
     }
 
     public Client getClient(Long clientId) {

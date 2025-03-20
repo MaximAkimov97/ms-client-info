@@ -4,6 +4,7 @@ import com.example.demo.domain.Client;
 import com.example.demo.dto.ClientDTO;
 import com.example.demo.mapper.ClientInfoMapper;
 import com.example.demo.service.ClientInfoService;
+import com.example.demo.service.ClientRegistrationBanException;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -25,7 +26,7 @@ public class ClientController {
 
     @PostMapping
     @Operation(summary = "Создание нового клиента в БД")
-    public ResponseEntity<ClientDTO> createClient(@RequestBody @Valid ClientDTO client) {
+    public ResponseEntity<ClientDTO> createClient(@RequestBody @Valid ClientDTO client) throws ClientRegistrationBanException {
         Client clientDomain = clientInfoService.createClient(clientInfoMapper.clientDTOToClient(client));
         return new ResponseEntity<>(clientInfoMapper.clientToClientDTO(clientDomain), HttpStatus.CREATED);
     }
